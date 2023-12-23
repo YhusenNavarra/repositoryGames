@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Centrar y estirar un elemento Flash</title>
+</head>
+
+<body>
+    <script src="https://xxsibxx.github.io/ruffleembedsetup112/ruffle/ruffle.js"></script>
+    <center>
+        <div class="swf-container" style="width: 100vw;">
+            <div class="swf" style="display: table-cell; vertical-align: middle; width: 100%;">
+                <embed height="480" pluginspage="http://www.macromedia.com/go/getflashplayer"
+                    src="https://yhusennavarra.github.io/repositoryGames/papalouie/cactusmccoy2.swf"
+                    width="620"></embed>
+            </div>
+            <button
+                style="float: right; margin-right: 10px; transform: translate(-50%, -50%); background-color: black; border-radius: 50%; padding: 20px; width: 50px; height: 50px; text-align: center; font-size: 24px; line-height: 0;"
+                onclick="toggleFullScreen()">⤢</button>
+        </div>
+    </center>
+    <script>
+        function toggleFullScreen() {
+            if (!document.fullscreenElement) {
+                document.documentElement.requestFullscreen();
+            } else {
+                if (document.exitFullscreen) {
+                    document.exitFullscreen();
+                }
+            }
+        }
+    </script>
+</body>
+
+</html>
