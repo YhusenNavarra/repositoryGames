@@ -1,33 +1,54 @@
-<html>
+<!DOCTYPE html>
+<html lang="es">
 
 <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>CELESTE Classic</title>
   <link rel="stylesheet" href="styles.css">
   <link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
   <style>
+    body {
+      margin: 0;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      background-color: #1d2b53;
+    }
+
+    .canvas-container {
+      position: relative;
+      width: 100%;
+      max-width: 512px;
+      height: 512px;
+      border-style: solid;
+      border-width: 4px;
+      border-color: #1d2b53;
+    }
+
     .subcontent {
+      /* width: 40%; */
+      max-width: 20%;
       text-align: left;
-      border: 2px solid black; /* Borde negro */
-      background-color: #4e4e4e; /* Fondo gris */
-      padding: 10px; /* Espaciado interno */
-      font-family: 'Pixel Art', sans-serif; /* Utiliza una fuente pixelart si está disponible, de lo contrario, utiliza una fuente sans-serif predeterminada */
-      display: inline-block; /* Hace que el contenedor se comporte como un bloque en línea */
-      color: white; /* Color del texto blanco */
+      border: 2px solid black;
+      background-color: #4e4e4e;
+      padding: 10px;
+      font-family: 'Pixel Art', sans-serif;
+      color: white;
       line-height: 1.4;
-      max-width: 482;
     }
 
     .subcontent br {
-      margin-bottom: 10px; /* Ajusta este valor según el espaciado que desees entre líneas cortadas */
+      margin-bottom: 10px;
     }
 
     @font-face {
       font-family: 'Pixel Art';
       src: url('https://celesteclassic.github.io/font/pico-8-webfont.woff');
-      /* Reemplaza 'ruta/a/tu/fuente/pixelart.ttf' con la ruta de tu fuente pixelart */
     }
-  </style>
-  <style type="text/css">
+
     ::-webkit-scrollbar {
       -webkit-appearance: none;
       width: 8px;
@@ -60,11 +81,6 @@
       color: #c2c3c7;
     }
 
-    canvas#canvas {
-      width: 512px;
-      height: 512px;
-    }
-
     canvas {
       image-rendering: optimizeSpeed;
       image-rendering: -moz-crisp-edges;
@@ -72,71 +88,119 @@
       image-rendering: optimize-contrast;
       image-rendering: pixelated;
       -ms-interpolation-mode: nearest-neighbor;
-      border: 0px
+      border: 0px;
+      width: 100%;
+      height: 100%;
+    }
+
+    .fullscreen .subcontent,
+
+    .fullscreen-button {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      background-color: black;
+      border-radius: 50%;
+      padding: 10px;
+      width: 30px;
+      height: 30px;
+      text-align: center;
+      font-size: 14px;
+      line-height: 0;
+      color: white;
+      border: none;
+      cursor: pointer;
+    }
+
+    .gray-letter {
+      color: #888; /* O cualquier otro color gris que desees */
+    }
+
+    .fullscreen canvas {
+      width: 110%;
+      height: 110%;
+      margin: -5%;
     }
   </style>
 </head>
 
 <body>
 
-  <div class="content">
-    <center>
-      <td>
-        <div style="width:512px;height:512px;border-style:solid;border-width:4px;border-color:#1d2b53;">
-          <canvas class="emscripten" id="canvas" oncontextmenu="event.preventDefault()" width="128"
-            height="128"></canvas>
-          <script type="text/javascript">
-            var canvas = document.getElementById("canvas");
-            canvas.width = window.innerWidth;
-            canvas.height = window.innerHeight;
-            var Module = {};
-            Module.canvas = canvas;
-          </script>
-          <script>
-            function toggleFullScreen() {
-              if (!document.fullscreenElement) {
-                document.documentElement.requestFullscreen();
-              } else {
-                if (document.exitFullscreen) {
-                  document.exitFullscreen();
-                }
-              }
-            }
-          </script>
-          <button
-            style="float: right; margin-right: -40px; transform: translate(-50%, -50%); background-color: black; border-radius: 50%; padding: 20px; width: 50px; height: 50px; text-align: center; font-size: 24px; line-height: 0;"
-            onclick="toggleFullScreen()">⤢</button>
-          <script async="" type="text/javascript" src="celeste2.js"></script>
-          <script>
-            function onKeyDown_blocker(event) {
-              event = event || window.event;
-              var o = document.activeElement;
-              if (!o || o == document.body || o.tagName == "canvas") {
-                if ([32, 37, 38, 39, 40].indexOf(event.keyCode) > -1) {
-                  if (event.preventDefault) event.preventDefault();
-                }
-              }
-            }
-            document.addEventListener('keydown', onKeyDown_blocker, false);
-          </script>
+  <div class="canvas-container">
+    <canvas class="emscripten" id="canvas" oncontextmenu="event.preventDefault()"></canvas>
+    <script type="text/javascript">
+      var canvas = document.getElementById("canvas");
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+      var Module = {};
+      Module.canvas = canvas;
+    </script>
+    <script>
+      function toggleFullScreen() {
+        var elem = document.documentElement;
+        if (!document.fullscreenElement) {
+          elem.requestFullscreen();
+          document.body.classList.add('fullscreen');
+        } else {
+          if (document.exitFullscreen) {
+            document.exitFullscreen();
+            document.body.classList.remove('fullscreen');
+          }
+        }
+        // Llamar a una función para manejar la visibilidad de subcontent
+        toggleSubcontentVisibility();
+      }
 
-          <div class="subcontent">
-            controls
-            <hr>
-            <em>s/f</em>: &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;previous/next section or checkpoint<br>
-            <em>shift+s/f</em>: previous/next section (skips checkpoints)<br>
-            <em>e</em>: &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;select checkpoint to end on<br>
-            <br>
-            <em>ctrl+9</em>: &nbsp;&nbsp;&nbsp;create gif of last 8 seconds<br>
-            <br>
-            A standalone practice mod can be downloaded <a
-              href="https://github.com/CelesteClassic/Celeste2PracMod">here</a>.
-          </div>
-        </div>
-      </td>
-    </center>
+      function toggleSubcontentVisibility() {
+        var subcontent = document.querySelector('.subcontent');
+        if (document.body.classList.contains('fullscreen')) {
+          subcontent.style.display = 'none';
+        } else {
+          subcontent.style.display = 'block';
+        }
+      }
+
+      document.addEventListener('fullscreenchange', function () {
+        // Llamar a la función de visibilidad del subcontent cuando cambia el estado de pantalla completa
+        toggleSubcontentVisibility();
+      });
+
+      document.addEventListener('keydown', function (event) {
+        if (event.key === 'Escape' && document.fullscreenElement) {
+          document.exitFullscreen();
+          document.body.classList.remove('fullscreen');
+          // Llamar a la función de visibilidad del subcontent al salir de pantalla completa con Esc
+          toggleSubcontentVisibility();
+        }
+      });
+    </script>
+
+    <button class="fullscreen-button" onclick="toggleFullScreen()">⤢</button>
+    <script async="" type="text/javascript" src="celeste2.js"></script>
+    <script>
+      function onKeyDown_blocker(event) {
+        event = event || window.event;
+        var o = document.activeElement;
+        if (!o || o == document.body || o.tagName == "canvas") {
+          if ([32, 37, 38, 39, 40].indexOf(event.keyCode) > -1) {
+            if (event.preventDefault) event.preventDefault();
+          }
+        }
+      }
+      document.addEventListener('keydown', onKeyDown_blocker, false);
+    </script>
   </div>
-
+  <div class="subcontent">
+    controls<hr>
+    <em><span class="gray-letter">s/f:</span></em> previous/next section or checkpoint<br>
+    <em><span class="gray-letter">shift+s/f:</span></em> previous/next section (skips checkpoints)<br>
+    <em><span class="gray-letter">e:</span></em> select checkpoint to end on<br>
+    <br>
+    <em><span class="gray-letter">ctrl+9:</span></em> create gif of last 8 seconds<br>
+    <br>
+    A standalone practice mod can be downloaded <a href="https://github.com/CelesteClassic/Celeste2PracMod">here</a>.
+  </div>
+  
 
 </body>
 
